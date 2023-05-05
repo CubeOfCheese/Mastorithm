@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Mastorithm</string>
+
+    <string-array name="displayNames">
+        <item>David</item>
+        <item>Alex</item>
+        <item>Maria</item>
+        <item>Marco</item>
+    </string-array>
+
+    <string-array name="usernames">
+        <item>/@david@mastodon.social</item>
+        <item>/@alex@mstdn.social</item>
+        <item>/@maria@mstdn.jp</item>
+        <item>/@marco@mastodon.cloud</item>
+    </string-array>
+
+    <string-array name="postContent">
+        <item>asperiores corrupti est fugit veritatis vel accusantium est rerum sapiente necessitatibus aperiam laudantium cumque iure non sunt odio accusamus aliquid </item>
+        <item>totam praesentium earum labore vero voluptatem vero laboriosam sed unde sequi debitis quia et ipsum dolorem sit laboriosam qui cupiditate </item>
+        <item>cumque est tempore aut facere ab harum ad sint deserunt minus fugiat suscipit et commodi consectetur nemo dolorem quos magni </item>
+        <item>facere mollitia et dolorem eos sint neque perferendis nesciunt eius dicta sint porro voluptatem ipsam iure aut et eum qui </item>
+    </string-array>
 </resources>
