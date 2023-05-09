@@ -1,6 +1,8 @@
 package com.cubeofcheese.mastorithm
 
-data class PostModel (var displayName: String, var username: String, var postContent: String)
+import android.text.Spanned
+
+data class PostModel(var displayName: String, var username: String, var postContent: Spanned)
 
 //{
 //    lateinit var displayName: String

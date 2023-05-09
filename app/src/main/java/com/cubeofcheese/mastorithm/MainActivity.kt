@@ -2,9 +2,18 @@ package com.cubeofcheese.mastorithm
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.keylesspalace.tusky.util.parseAsMastodonHtml
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
+const val BASE_URL = "https://mstdn.social"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var newRecyclerView: RecyclerView
@@ -16,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         displayNames = arrayOf(
             "David",
@@ -40,19 +51,52 @@ class MainActivity : AppCompatActivity() {
         newRecyclerView.layoutManager = LinearLayoutManager(this)
         newRecyclerView.setHasFixedSize(true)
 
+
+
         newArrayList = arrayListOf<PostModel>()
-        getUserData()
+//        getUserData()
+        getMyData()
+    }
 
+    private fun getMyData() {
+        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .build()
+            .create(ApiInterface::class.java)
+
+        val retrofitData = retrofitBuilder.getData()
+
+        retrofitData.enqueue(object: Callback<List<TestData>?> {
+            override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
+                val responseBody = response.body()!!
+
+                val myStringBuilder = StringBuilder()
+                for (myData in responseBody) {
+                    val post = PostModel(
+                        myData.account.display_name,
+                        myData.account.acct,
+                        myData.content.parseAsMastodonHtml())
+                    newArrayList.add(post)
+                }
+
+                newRecyclerView.adapter = PostAdapter(newArrayList)
+
+            }
+
+            override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {
+                Log.d("MainAc", "onFailure: "+t.message)
+            }
+        })
     }
 
 
-    private fun getUserData() {
-        for (i in postContents.indices) {
-            val post = PostModel(displayNames[i], usernames[i], postContents[i])
-            newArrayList.add(post)
-        }
-
-        newRecyclerView.adapter = PostAdapter(newArrayList)
-    }
+//    private fun getUserData() {
+//        for (i in postContents.indices) {
+//            val post = PostModel(displayNames[i], usernames[i], postContents[i])
+//            newArrayList.add(post)
+//        }
+//
+//        newRecyclerView.adapter = PostAdapter(newArrayList)
+//    }
 
 }
