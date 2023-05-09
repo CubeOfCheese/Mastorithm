@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
 
 
         newArrayList = arrayListOf<PostModel>()
-//        getUserData()
         getMyData()
     }
 
@@ -75,7 +74,9 @@ class MainActivity : AppCompatActivity() {
                     val post = PostModel(
                         myData.account.display_name,
                         myData.account.acct,
-                        myData.content.parseAsMastodonHtml())
+                        myData.account.avatar_static,
+                        myData.content.parseAsMastodonHtml()
+                    )
                     newArrayList.add(post)
                 }
 
@@ -88,15 +89,5 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
-
-//    private fun getUserData() {
-//        for (i in postContents.indices) {
-//            val post = PostModel(displayNames[i], usernames[i], postContents[i])
-//            newArrayList.add(post)
-//        }
-//
-//        newRecyclerView.adapter = PostAdapter(newArrayList)
-//    }
 
 }

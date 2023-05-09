@@ -3,8 +3,10 @@ package com.cubeofcheese.mastorithm
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
 
@@ -22,12 +24,18 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
         holder.displayName.text = currentItem.displayName
         holder.username.text = currentItem.username
         holder.postContent.text = currentItem.postContent
+        Picasso
+            .get()
+            .load(currentItem.avatar)
+            .placeholder(R.drawable.default_profile_picture)
+            .into(holder.avatar);
     }
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val displayName : TextView = itemView.findViewById(R.id.displayName)
         val username : TextView = itemView.findViewById(R.id.username)
+        val avatar : ImageView = itemView.findViewById(R.id.avatar)
         val postContent : TextView = itemView.findViewById(R.id.postContent)
     }
 
