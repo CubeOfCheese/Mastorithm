@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,12 +22,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var displayNames : Array<String>
     lateinit var usernames : Array<String>
     lateinit var postContents : Array<String>
+    lateinit var swipeToRefresh : SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
 
         displayNames = arrayOf(
             "David",
@@ -52,9 +52,18 @@ class MainActivity : AppCompatActivity() {
         newRecyclerView.setHasFixedSize(true)
 
 
-
         newArrayList = arrayListOf<PostModel>()
         getMyData()
+        refreshApp()
+    }
+
+    private fun refreshApp() {
+        swipeToRefresh = findViewById(R.id.swipeToRefresh)
+
+        swipeToRefresh.setOnRefreshListener {
+            getMyData()
+            swipeToRefresh.isRefreshing = false
+        }
     }
 
     private fun getMyData() {
@@ -77,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                         myData.account.avatar_static,
                         myData.content.parseAsMastodonHtml()
                     )
-                    newArrayList.add(post)
+                    newArrayList.add(0, post)
                 }
 
                 newRecyclerView.adapter = PostAdapter(newArrayList)
