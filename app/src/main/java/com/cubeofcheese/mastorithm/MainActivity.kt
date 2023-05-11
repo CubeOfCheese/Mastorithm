@@ -19,9 +19,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
-    lateinit var displayNames : Array<String>
-    lateinit var usernames : Array<String>
-    lateinit var postContents : Array<String>
     lateinit var swipeToRefresh : SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,20 +31,20 @@ class MainActivity : AppCompatActivity() {
 
 
         feed = arrayListOf<PostModel>()
-        getMyData()
-        refreshApp()
+        initializeHomeFeed()
+        setupRefreshBehavior()
     }
 
-    private fun refreshApp() {
+    private fun setupRefreshBehavior() {
         swipeToRefresh = findViewById(R.id.swipeToRefresh)
 
         swipeToRefresh.setOnRefreshListener {
-            getMyData()
+            refreshHomeFeed(feed[0].id)
             swipeToRefresh.isRefreshing = false
         }
     }
 
-    private fun getMyData() {
+    private fun initializeHomeFeed() {
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
@@ -62,6 +59,7 @@ class MainActivity : AppCompatActivity() {
 
                 for (myData in responseBody) {
                     val post = PostModel(
+                        myData.id,
                         myData.account.display_name,
                         myData.account.acct,
                         myData.account.avatar_static,
@@ -71,6 +69,39 @@ class MainActivity : AppCompatActivity() {
                 }
                 feed.addAll(0, refreshArrayList)
 
+                newRecyclerView.adapter = PostAdapter(feed)
+            }
+
+            override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {
+                Log.d("MainAc", "onFailure: "+t.message)
+            }
+        })
+    }
+
+    private fun refreshHomeFeed(sinceId: String) {
+        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .build()
+            .create(ApiInterface::class.java)
+
+        val retrofitData = retrofitBuilder.getData(sinceId)
+
+        retrofitData.enqueue(object: Callback<List<TestData>?> {
+            override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
+                val responseBody = response.body()!!
+                val refreshArrayList = arrayListOf<PostModel>()
+
+                for (myData in responseBody) {
+                    val post = PostModel(
+                        myData.id,
+                        myData.account.display_name,
+                        myData.account.acct,
+                        myData.account.avatar_static,
+                        myData.content.parseAsMastodonHtml()
+                    )
+                    refreshArrayList.add(post)
+                }
+                feed.addAll(0, refreshArrayList)
 
                 newRecyclerView.adapter = PostAdapter(feed)
             }
