@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
                 val responseBody = response.body()!!
                 val refreshArrayList = arrayListOf<PostModel>()
+                val seenAccountList = arrayListOf<String>()
 
                 for (myData in responseBody) {
                     val post = PostModel(
@@ -65,7 +66,10 @@ class MainActivity : AppCompatActivity() {
                         myData.account.avatar_static,
                         myData.content.parseAsMastodonHtml()
                     )
-                    refreshArrayList.add(post)
+                    if (!seenAccountList.contains(post.username)) {
+                        refreshArrayList.add(post)
+                        seenAccountList.add(post.username)
+                    }
                 }
                 feed.addAll(0, refreshArrayList)
 
