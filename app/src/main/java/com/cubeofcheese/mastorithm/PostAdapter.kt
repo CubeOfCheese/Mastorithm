@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.cubeofcheese.mastorithm.models.PostModel
 import com.squareup.picasso.Picasso
 
 class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
@@ -26,6 +27,10 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
         holder.postContent.text = currentItem.postContent
         Picasso
             .get()
+            .load(currentItem.imagePreview)
+            .into(holder.imagePreview);
+        Picasso
+            .get()
             .load(currentItem.avatar)
             .placeholder(R.drawable.default_profile_picture)
             .into(holder.avatar);
@@ -37,6 +42,7 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
         val username : TextView = itemView.findViewById(R.id.username)
         val avatar : ImageView = itemView.findViewById(R.id.avatar)
         val postContent : TextView = itemView.findViewById(R.id.postContent)
+        val imagePreview : ImageView = itemView.findViewById(R.id.imagePreview)
     }
 
 }

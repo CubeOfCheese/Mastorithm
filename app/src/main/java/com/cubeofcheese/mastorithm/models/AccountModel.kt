@@ -1,4 +1,4 @@
-package com.cubeofcheese.mastorithm
+package com.cubeofcheese.mastorithm.models
 
 data class AccountModel (
     val id: String,

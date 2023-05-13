@@ -3,10 +3,10 @@ package com.cubeofcheese.mastorithm
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.cubeofcheese.mastorithm.models.PostModel
 import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,14 +58,28 @@ class MainActivity : AppCompatActivity() {
                 val refreshArrayList = arrayListOf<PostModel>()
                 val seenAccountList = arrayListOf<String>()
 
-                for (myData in responseBody) {
-                    val post = PostModel(
-                        myData.id,
-                        myData.account.display_name,
-                        myData.account.acct,
-                        myData.account.avatar_static,
-                        myData.content.parseAsMastodonHtml()
-                    )
+                for (status in responseBody) {
+                    var post: PostModel;
+                    if (status.mediaAttachments != null && status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
+                        post = PostModel(
+                            status.id,
+                            status.account.display_name,
+                            status.account.acct,
+                            status.account.avatar_static,
+                            status.content.parseAsMastodonHtml(),
+                            status.mediaAttachments[0].preview_url
+                        )
+                    } else {
+                        post = PostModel(
+                            status.id,
+                            status.account.display_name,
+                            status.account.acct,
+                            status.account.avatar_static,
+                            status.content.parseAsMastodonHtml(),
+                            null
+                        )
+                    }
+
                     if (!seenAccountList.contains(post.username)) {
                         refreshArrayList.add(post)
                         seenAccountList.add(post.username)
@@ -95,14 +109,28 @@ class MainActivity : AppCompatActivity() {
                 val responseBody = response.body()!!
                 val refreshArrayList = arrayListOf<PostModel>()
 
-                for (myData in responseBody) {
-                    val post = PostModel(
-                        myData.id,
-                        myData.account.display_name,
-                        myData.account.acct,
-                        myData.account.avatar_static,
-                        myData.content.parseAsMastodonHtml()
-                    )
+                for (status in responseBody) {
+                    var post: PostModel;
+                    if (status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
+                        post = PostModel(
+                            status.id,
+                            status.account.display_name,
+                            status.account.acct,
+                            status.account.avatar_static,
+                            status.content.parseAsMastodonHtml(),
+                            status.mediaAttachments[0].preview_url
+                        )
+                    } else {
+                        post = PostModel(
+                            status.id,
+                            status.account.display_name,
+                            status.account.acct,
+                            status.account.avatar_static,
+                            status.content.parseAsMastodonHtml(),
+                            null
+                        )
+                    }
+
                     refreshArrayList.add(post)
                 }
                 feed.addAll(0, refreshArrayList)
@@ -115,5 +143,4 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 }
