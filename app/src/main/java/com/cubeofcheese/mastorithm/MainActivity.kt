@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
 
         feed = arrayListOf<PostModel>()
-        initializeHomeFeed()
+        refreshHomeFeed(null)
         setupRefreshBehavior()
     }
 
@@ -44,59 +44,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initializeHomeFeed() {
-        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(ApiInterface::class.java)
-
-        val retrofitData = retrofitBuilder.getData()
-
-        retrofitData.enqueue(object: Callback<List<TestData>?> {
-            override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
-                val responseBody = response.body()!!
-                val refreshArrayList = arrayListOf<PostModel>()
-                val seenAccountList = arrayListOf<String>()
-
-                for (status in responseBody) {
-                    var post: PostModel;
-                    if (status.mediaAttachments != null && status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
-                        post = PostModel(
-                            status.id,
-                            status.account.display_name,
-                            status.account.acct,
-                            status.account.avatar_static,
-                            status.content.parseAsMastodonHtml(),
-                            status.mediaAttachments[0].preview_url
-                        )
-                    } else {
-                        post = PostModel(
-                            status.id,
-                            status.account.display_name,
-                            status.account.acct,
-                            status.account.avatar_static,
-                            status.content.parseAsMastodonHtml(),
-                            null
-                        )
-                    }
-
-                    if (!seenAccountList.contains(post.username)) {
-                        refreshArrayList.add(post)
-                        seenAccountList.add(post.username)
-                    }
-                }
-                feed.addAll(0, refreshArrayList)
-
-                newRecyclerView.adapter = PostAdapter(feed)
-            }
-
-            override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {
-                Log.d("MainAc", "onFailure: "+t.message)
-            }
-        })
-    }
-
-    private fun refreshHomeFeed(sinceId: String) {
+    private fun refreshHomeFeed(sinceId: String?) {
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
