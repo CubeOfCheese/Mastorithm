@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         val pageAdapter = PageAdapter(this, supportFragmentManager)
 
-        pageAdapter.addPage(Home(), "Home.kt")
+        pageAdapter.addPage(Home(), "Home")
         pageAdapter.addPage(Trending(), "Trending")
         pageAdapter.addPage(Local(), "Local")
 
