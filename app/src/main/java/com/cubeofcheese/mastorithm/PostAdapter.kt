@@ -22,6 +22,7 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = postList[position]
+        holder.boostedByText.text = currentItem.boostedByMessage
         holder.displayName.text = currentItem.displayName
         holder.username.text = currentItem.username
         holder.postContent.text = currentItem.postContent
@@ -38,6 +39,7 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val boostedByText : TextView = itemView.findViewById(R.id.boostedByText)
         val displayName : TextView = itemView.findViewById(R.id.displayName)
         val username : TextView = itemView.findViewById(R.id.username)
         val avatar : ImageView = itemView.findViewById(R.id.avatar)

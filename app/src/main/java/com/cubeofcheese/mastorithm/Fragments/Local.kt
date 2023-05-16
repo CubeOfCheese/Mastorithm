@@ -78,7 +78,8 @@ class Local : Fragment() {
                             status.account.acct,
                             status.account.avatar_static,
                             status.content.parseAsMastodonHtml(),
-                            status.mediaAttachments[0].preview_url
+                            status.mediaAttachments[0].preview_url,
+                            null
                         )
                     } else {
                         post = PostModel(
@@ -87,6 +88,7 @@ class Local : Fragment() {
                             status.account.acct,
                             status.account.avatar_static,
                             status.content.parseAsMastodonHtml(),
+                            null,
                             null
                         )
                     }

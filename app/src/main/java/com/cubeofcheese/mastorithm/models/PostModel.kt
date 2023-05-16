@@ -7,4 +7,5 @@ data class PostModel(var id: String,
                      var username: String,
                      var avatar: String,
                      var postContent: Spanned,
-                     val imagePreview: String?)
+                     val imagePreview: String?,
+                     val boostedByMessage: String?)

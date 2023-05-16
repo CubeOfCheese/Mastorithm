@@ -70,24 +70,51 @@ class Home : Fragment() {
 
                 for (status in responseBody) {
                     var post: PostModel;
-                    if (status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
-                        post = PostModel(
-                            status.id,
-                            status.account.display_name,
-                            status.account.acct,
-                            status.account.avatar_static,
-                            status.content.parseAsMastodonHtml(),
-                            status.mediaAttachments[0].preview_url
-                        )
-                    } else {
-                        post = PostModel(
-                            status.id,
-                            status.account.display_name,
-                            status.account.acct,
-                            status.account.avatar_static,
-                            status.content.parseAsMastodonHtml(),
-                            null
-                        )
+                    if (status.reblog != null) {
+                        if (status.reblog.mediaAttachments.isNotEmpty() && status.reblog.mediaAttachments[0].type == "image") {
+                            post = PostModel(
+                                status.reblog.id,
+                                status.reblog.account.display_name,
+                                status.reblog.account.acct,
+                                status.reblog.account.avatar_static,
+                                status.reblog.content.parseAsMastodonHtml(),
+                                status.reblog.mediaAttachments[0].preview_url,
+                                "Boosted by " + status.account.display_name
+                            )
+                        } else {
+                            post = PostModel(
+                                status.reblog.id,
+                                status.reblog.account.display_name,
+                                status.reblog.account.acct,
+                                status.reblog.account.avatar_static,
+                                status.reblog.content.parseAsMastodonHtml(),
+                                null,
+                                "Boosted by " + status.account.display_name
+                            )
+                        }
+                    }
+                    else {
+                        if (status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
+                            post = PostModel(
+                                status.id,
+                                status.account.display_name,
+                                status.account.acct,
+                                status.account.avatar_static,
+                                status.content.parseAsMastodonHtml(),
+                                status.mediaAttachments[0].preview_url,
+                                null
+                            )
+                        } else {
+                            post = PostModel(
+                                status.id,
+                                status.account.display_name,
+                                status.account.acct,
+                                status.account.avatar_static,
+                                status.content.parseAsMastodonHtml(),
+                                null,
+                                null
+                            )
+                        }
                     }
 
                     refreshArrayList.add(post)
