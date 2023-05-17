@@ -8,13 +8,13 @@ import retrofit2.http.Query
 interface ApiInterface {
     @Headers("Authorization: Bearer <authcode>")
     @GET("https://mstdn.social/api/v1/timelines/home")
-    fun getData(@Query("since_id") sinceId: String?): Call<List<TestData>>
+    fun getData(@Query("since_id") sinceId: String?, @Query("max_id") maxId: String?): Call<List<TestData>>
 
     @Headers("Authorization: Bearer <authcode>")
     @GET("https://mstdn.social/api/v1/trends/statuses")
-    fun getTrendingStatuses(): Call<List<TestData>>
+    fun getTrendingStatuses(@Query("offset") offset: Int?): Call<List<TestData>>
 
     @Headers("Authorization: Bearer <authcode>")
     @GET("https://mstdn.social/api/v1/timelines/public?local=true")
-    fun getLocalStatuses(@Query("since_id") sinceId: String?): Call<List<TestData>>
+    fun getLocalStatuses(@Query("since_id") sinceId: String?, @Query("max_id") maxId: String?): Call<List<TestData>>
 }

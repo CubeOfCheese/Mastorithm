@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cubeofcheese.mastorithm.*
 import com.cubeofcheese.mastorithm.models.PostModel
+import com.cubeofcheese.mastorithm.util.generatePost
 import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,6 +25,8 @@ class Home : Fragment() {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
+    lateinit var adapter: PostAdapter
+    var lock = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +34,7 @@ class Home : Fragment() {
     ): View? {
 
         feed = arrayListOf<PostModel>()
-        refreshHomeFeed(null)
+        refreshFeed(null)
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
@@ -44,24 +47,34 @@ class Home : Fragment() {
         newRecyclerView.setHasFixedSize(true)
 
         setupRefreshBehavior(view)
+
+
+        newRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!lock && !recyclerView.canScrollVertically(1)) {
+                    fetchFeed(feed.size)
+                }
+            }
+        })
     }
 
     private fun setupRefreshBehavior(view: View) {
         swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
 
         swipeToRefresh.setOnRefreshListener {
-            refreshHomeFeed(feed[0].id)
+            refreshFeed(feed[0].id)
             swipeToRefresh.isRefreshing = false
         }
     }
 
-    private fun refreshHomeFeed(sinceId: String?) {
+    private fun refreshFeed(sinceId: String?) {
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getData(sinceId)
+        val retrofitData = retrofitBuilder.getData(sinceId, null)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
@@ -69,59 +82,42 @@ class Home : Fragment() {
                 val refreshArrayList = arrayListOf<PostModel>()
 
                 for (status in responseBody) {
-                    var post: PostModel;
-                    if (status.reblog != null) {
-                        if (status.reblog.mediaAttachments.isNotEmpty() && status.reblog.mediaAttachments[0].type == "image") {
-                            post = PostModel(
-                                status.reblog.id,
-                                status.reblog.account.display_name,
-                                status.reblog.account.acct,
-                                status.reblog.account.avatar_static,
-                                status.reblog.content.parseAsMastodonHtml(),
-                                status.reblog.mediaAttachments[0].preview_url,
-                                "Boosted by " + status.account.display_name
-                            )
-                        } else {
-                            post = PostModel(
-                                status.reblog.id,
-                                status.reblog.account.display_name,
-                                status.reblog.account.acct,
-                                status.reblog.account.avatar_static,
-                                status.reblog.content.parseAsMastodonHtml(),
-                                null,
-                                "Boosted by " + status.account.display_name
-                            )
-                        }
-                    }
-                    else {
-                        if (status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
-                            post = PostModel(
-                                status.id,
-                                status.account.display_name,
-                                status.account.acct,
-                                status.account.avatar_static,
-                                status.content.parseAsMastodonHtml(),
-                                status.mediaAttachments[0].preview_url,
-                                null
-                            )
-                        } else {
-                            post = PostModel(
-                                status.id,
-                                status.account.display_name,
-                                status.account.acct,
-                                status.account.avatar_static,
-                                status.content.parseAsMastodonHtml(),
-                                null,
-                                null
-                            )
-                        }
-                    }
+                    var post: PostModel = generatePost(status)
 
                     refreshArrayList.add(post)
                 }
                 feed.addAll(0, refreshArrayList)
 
-                newRecyclerView.adapter = PostAdapter(feed)
+                adapter = PostAdapter(feed)
+                newRecyclerView.adapter = adapter
+            }
+
+            override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {
+                Log.d("MainAc", "onFailure: "+t.message)
+            }
+        })
+    }
+
+    private fun fetchFeed(offset: Int) {
+        lock = true
+        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .build()
+            .create(ApiInterface::class.java)
+
+        val retrofitData = retrofitBuilder.getData(null, feed[feed.size-1].id)
+
+        retrofitData.enqueue(object: Callback<List<TestData>?> {
+            override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
+                val responseBody = response.body()!!
+
+                for (status in responseBody) {
+                    var post: PostModel = generatePost(status)
+
+                    feed.add(post)
+                }
+                adapter.notifyDataSetChanged()
+                lock = false
             }
 
             override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {

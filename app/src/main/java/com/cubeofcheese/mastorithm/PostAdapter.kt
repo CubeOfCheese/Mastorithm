@@ -1,5 +1,6 @@
 package com.cubeofcheese.mastorithm
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
         return postList.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = postList[position]
         holder.boostedByText.text = currentItem.boostedByMessage
@@ -35,6 +37,10 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
             .load(currentItem.avatar)
             .placeholder(R.drawable.default_profile_picture)
             .into(holder.avatar);
+
+        holder.repliesCount.text = currentItem.repliesCount.toString() + " Replies"
+        holder.reblogsCount.text = currentItem.reblogsCount.toString() + " Boosts"
+        holder.favouritesCount.text = currentItem.favoritesCount.toString() + " Stars"
     }
 
 
@@ -45,6 +51,9 @@ class PostAdapter(private val postList : ArrayList<PostModel>) : RecyclerView.Ad
         val avatar : ImageView = itemView.findViewById(R.id.avatar)
         val postContent : TextView = itemView.findViewById(R.id.postContent)
         val imagePreview : ImageView = itemView.findViewById(R.id.imagePreview)
+        val repliesCount : TextView = itemView.findViewById(R.id.repliesCount)
+        val reblogsCount : TextView = itemView.findViewById(R.id.reblogsCount)
+        val favouritesCount : TextView = itemView.findViewById(R.id.favouritesCount)
     }
 
 }

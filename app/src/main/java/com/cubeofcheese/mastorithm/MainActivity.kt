@@ -2,23 +2,13 @@ package com.cubeofcheese.mastorithm
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.cubeofcheese.mastorithm.Fragments.Home
 import com.cubeofcheese.mastorithm.Fragments.Local
 import com.cubeofcheese.mastorithm.Fragments.Trending
-import com.cubeofcheese.mastorithm.models.PostModel
+import com.cubeofcheese.mastorithm.R.id.feed
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
-import com.keylesspalace.tusky.util.parseAsMastodonHtml
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 

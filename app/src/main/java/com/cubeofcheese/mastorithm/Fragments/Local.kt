@@ -14,6 +14,7 @@ import com.cubeofcheese.mastorithm.PostAdapter
 import com.cubeofcheese.mastorithm.R
 import com.cubeofcheese.mastorithm.TestData
 import com.cubeofcheese.mastorithm.models.PostModel
+import com.cubeofcheese.mastorithm.util.generatePost
 import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,6 +26,8 @@ class Local : Fragment() {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
+    lateinit var adapter: PostAdapter
+    var lock = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +48,15 @@ class Local : Fragment() {
         newRecyclerView.setHasFixedSize(true)
 
         setupRefreshBehavior(view)
+
+        newRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!lock && !recyclerView.canScrollVertically(1)) {
+                    fetchFeed()
+                }
+            }
+        })
     }
 
     private fun setupRefreshBehavior(view: View) {
@@ -62,7 +74,7 @@ class Local : Fragment() {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getLocalStatuses(sinceId)
+        val retrofitData = retrofitBuilder.getLocalStatuses(sinceId, null)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
@@ -70,34 +82,14 @@ class Local : Fragment() {
                 val refreshArrayList = arrayListOf<PostModel>()
 
                 for (status in responseBody) {
-                    var post: PostModel;
-                    if (status.mediaAttachments.isNotEmpty() && status.mediaAttachments[0].type == "image") {
-                        post = PostModel(
-                            status.id,
-                            status.account.display_name,
-                            status.account.acct,
-                            status.account.avatar_static,
-                            status.content.parseAsMastodonHtml(),
-                            status.mediaAttachments[0].preview_url,
-                            null
-                        )
-                    } else {
-                        post = PostModel(
-                            status.id,
-                            status.account.display_name,
-                            status.account.acct,
-                            status.account.avatar_static,
-                            status.content.parseAsMastodonHtml(),
-                            null,
-                            null
-                        )
-                    }
+                    var post: PostModel = generatePost(status)
 
                     refreshArrayList.add(post)
                 }
                 feed.addAll(0, refreshArrayList)
 
-                newRecyclerView.adapter = PostAdapter(feed)
+                adapter = PostAdapter(feed)
+                newRecyclerView.adapter = adapter
             }
 
             override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {
@@ -106,5 +98,32 @@ class Local : Fragment() {
         })
     }
 
+    private fun fetchFeed() {
+        lock = true
+        val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .build()
+            .create(ApiInterface::class.java)
+
+        val retrofitData = retrofitBuilder.getLocalStatuses(null, feed[feed.size-1].id)
+
+        retrofitData.enqueue(object: Callback<List<TestData>?> {
+            override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
+                val responseBody = response.body()!!
+
+                for (status in responseBody) {
+                    var post: PostModel = generatePost(status)
+
+                    feed.add(post)
+                    adapter.notifyItemInserted(feed.size-1);
+                }
+                lock = false
+            }
+
+            override fun onFailure(call: Call<List<TestData>?>, t: Throwable) {
+                Log.d("MainAc", "onFailure: "+t.message)
+            }
+        })
+    }
 
 }
