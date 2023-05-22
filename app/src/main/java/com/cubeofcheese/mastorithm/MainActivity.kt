@@ -1,13 +1,12 @@
 package com.cubeofcheese.mastorithm
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
-import com.cubeofcheese.mastorithm.Fragments.Home
+import com.cubeofcheese.mastorithm.Fragments.Chrono
 import com.cubeofcheese.mastorithm.Fragments.Local
+import com.cubeofcheese.mastorithm.Fragments.ScrollableFeed
 import com.cubeofcheese.mastorithm.Fragments.Trending
-import com.cubeofcheese.mastorithm.R.id.feed
 import com.google.android.material.tabs.TabLayout
 
 class MainActivity : AppCompatActivity() {
@@ -23,13 +22,21 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
 
         val pageAdapter = PageAdapter(this, supportFragmentManager)
-
-        pageAdapter.addPage(Home(), "Home")
+        pageAdapter.addPage(Chrono(), "Chrono")
         pageAdapter.addPage(Trending(), "Trending")
         pageAdapter.addPage(Local(), "Local")
 
 
         viewPager.adapter = pageAdapter
         tabLayout.setupWithViewPager(viewPager)
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                val position = tab!!.position
+                (pageAdapter.getItem(position) as ScrollableFeed).scrollToTop()
+            }
+        })
     }
 }

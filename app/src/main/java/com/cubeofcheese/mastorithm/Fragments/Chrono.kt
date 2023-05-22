@@ -12,7 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cubeofcheese.mastorithm.*
 import com.cubeofcheese.mastorithm.models.PostModel
 import com.cubeofcheese.mastorithm.util.generatePost
-import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://mstdn.social"
 
-class Home : Fragment() {
+class Chrono : Fragment(), ScrollableFeed {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
@@ -125,5 +124,7 @@ class Home : Fragment() {
             }
         })
     }
-
+    override fun scrollToTop() {
+        newRecyclerView.scrollToPosition(0)
+    }
 }

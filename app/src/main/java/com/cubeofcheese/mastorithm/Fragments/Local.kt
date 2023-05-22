@@ -22,7 +22,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class Local : Fragment() {
+class Local : Fragment(), ScrollableFeed {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
@@ -125,5 +125,7 @@ class Local : Fragment() {
             }
         })
     }
-
+    override fun scrollToTop() {
+        newRecyclerView.scrollToPosition(0)
+    }
 }
