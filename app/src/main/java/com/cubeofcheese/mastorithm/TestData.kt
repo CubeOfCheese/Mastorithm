@@ -10,6 +10,7 @@ data class TestData(
     val replies_count: Int,
     val reblogs_count: Int,
     val favourites_count: Int,
+    val reblogged: Boolean,
     val content: String,
     val reblog: TestData,
     @SerializedName("media_attachments")

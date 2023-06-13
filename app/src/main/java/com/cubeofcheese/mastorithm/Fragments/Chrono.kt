@@ -76,6 +76,8 @@ class Chrono : Fragment(), ScrollableFeed {
         swipeToRefresh = view.findViewById(R.id.swipeToRefresh)
 
         swipeToRefresh.setOnRefreshListener {
+
+            //  TODO: this relies on the reblog status id, not the original status id. Need to fix
             refreshFeed(feed[0].id)
             swipeToRefresh.isRefreshing = false
         }

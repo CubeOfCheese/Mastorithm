@@ -3,6 +3,7 @@ package com.cubeofcheese.mastorithm
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.cubeofcheese.mastorithm.Fragments.BASE_URL
 import com.cubeofcheese.mastorithm.models.PostModel
+import com.cubeofcheese.mastorithm.util.generatePost
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class PostAdapter(private val postList : ArrayList<PostModel>, var context: Context ) : RecyclerView.Adapter<PostAdapter.MyViewHolder>() {
     var mainActivity = context as AppCompatActivity
@@ -54,7 +62,13 @@ class PostAdapter(private val postList : ArrayList<PostModel>, var context: Cont
             }
         }
         holder.reblogsCount.text = currentItem.reblogsCount.toString() + " Boosts"
+        holder.reblogsCount.setOnClickListener {
+            boostStatus(currentItem.id)
+        }
         holder.favouritesCount.text = currentItem.favoritesCount.toString() + " Stars"
+        holder.favouritesCount.setOnClickListener {
+            favouriteStatus(currentItem.id)
+        }
     }
 
 
@@ -70,4 +84,43 @@ class PostAdapter(private val postList : ArrayList<PostModel>, var context: Cont
         val favouritesCount : TextView = itemView.findViewById(R.id.favouritesCount)
     }
 
+}
+
+private fun boostStatus(statusId: String) {
+    val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)
+        .build()
+        .create(ApiInterface::class.java)
+
+    val retrofitData = retrofitBuilder.boostStatus(statusId)
+
+    retrofitData.enqueue(object: Callback<TestData?> {
+        override fun onResponse (call: Call<TestData?>, response: Response<TestData?>) {
+            Log.d("MainAc", "onSuccess: boosted" + response.body()?.content)
+        }
+
+        override fun onFailure(call: Call<TestData?>, t: Throwable) {
+            Log.d("MainAc", "onFailure: "+ t.message)
+        }
+    })
+}
+
+private fun favouriteStatus(statusId: String) {
+    val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)
+        .build()
+        .create(ApiInterface::class.java)
+
+    val retrofitData = retrofitBuilder.favouriteStatus(statusId)
+
+    retrofitData.enqueue(object: Callback<TestData?> {
+        override fun onResponse (call: Call<TestData?>, response: Response<TestData?>) {
+            var responseBody = response.body()!!
+            Log.d("MainAc", "onSuccess: Favourited"  + responseBody.content)
+        }
+
+        override fun onFailure(call: Call<TestData?>, t: Throwable) {
+            Log.d("MainAc", "onFailure: "+ t.message)
+        }
+    })
 }

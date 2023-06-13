@@ -120,15 +120,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Replies" />
-                        <!--                        <TextView-->
-                        <!--                            android:id="@+id/repliesCount"-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_weight="1"-->
-                        <!--                            android:gravity="center"-->
-                        <!--                            android:text="Replies" />-->
 
-                        <TextView
+                        <Button
                             android:id="@+id/reblogsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -136,13 +129,14 @@
                             android:gravity="center"
                             android:text="Boosts" />
 
-                        <TextView
+                        <Button
                             android:id="@+id/favouritesCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Stars" />
+
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
