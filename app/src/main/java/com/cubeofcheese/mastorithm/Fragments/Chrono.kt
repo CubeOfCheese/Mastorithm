@@ -1,11 +1,13 @@
 package com.cubeofcheese.mastorithm.Fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,6 +26,7 @@ class Chrono : Fragment(), ScrollableFeed {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
+    lateinit var repliesCount : Button
     lateinit var adapter: PostAdapter
     var lock = false
 
@@ -36,7 +39,7 @@ class Chrono : Fragment(), ScrollableFeed {
         refreshFeed(null)
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_chrono, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,6 +59,17 @@ class Chrono : Fragment(), ScrollableFeed {
                 }
             }
         })
+
+//        repliesCount = view.findViewById(R.id.repliesCount)
+//
+//
+//        repliesCount.setOnClickListener {
+//            activity?.let {
+//                val intent = Intent(it, ThreadActivity::class.java)
+//                intent.putExtra("statusId", "110533224291142854")
+//                it.startActivity(intent)
+//            }
+//        }
     }
 
     private fun setupRefreshBehavior(view: View) {
@@ -87,7 +101,7 @@ class Chrono : Fragment(), ScrollableFeed {
                 }
                 feed.addAll(0, refreshArrayList)
 
-                adapter = PostAdapter(feed)
+                adapter = activity?.let { PostAdapter(feed, it) }!!
                 newRecyclerView.adapter = adapter
             }
 
@@ -127,4 +141,6 @@ class Chrono : Fragment(), ScrollableFeed {
     override fun scrollToTop() {
         newRecyclerView.scrollToPosition(0)
     }
+
+
 }

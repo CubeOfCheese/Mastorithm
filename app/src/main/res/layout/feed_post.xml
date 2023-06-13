@@ -33,7 +33,7 @@
                         android:layout_marginTop="8dp"
                         android:src="@drawable/default_profile_picture"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/boostedByText" />
+                        app:layout_constraintTop_toBottomOf="@+id/presenceReason" />
 
                     <TextView
                         android:id="@+id/displayName"
@@ -44,7 +44,7 @@
                         android:text="TextView"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@+id/avatar"
-                        app:layout_constraintTop_toBottomOf="@+id/boostedByText" />
+                        app:layout_constraintTop_toBottomOf="@+id/presenceReason" />
 
                     <TextView
                         android:id="@+id/username"
@@ -56,7 +56,7 @@
                         app:layout_constraintStart_toEndOf="@+id/avatar" />
 
                     <TextView
-                        android:id="@+id/boostedByText"
+                        android:id="@+id/presenceReason"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -80,7 +80,7 @@
                         android:layout_marginEnd="16dp"
                         android:maxEms="60"
                         android:text="TextView"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +101,9 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:gravity="fill_horizontal"
                         android:orientation="horizontal"
@@ -111,13 +113,20 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imagePreview">
 
-                        <TextView
+                        <Button
                             android:id="@+id/repliesCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Replies" />
+                        <!--                        <TextView-->
+                        <!--                            android:id="@+id/repliesCount"-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:layout_weight="1"-->
+                        <!--                            android:gravity="center"-->
+                        <!--                            android:text="Replies" />-->
 
                         <TextView
                             android:id="@+id/reblogsCount"

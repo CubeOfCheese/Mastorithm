@@ -86,7 +86,7 @@ class Trending : Fragment(), ScrollableFeed {
 
                     feed.add(post)
                 }
-                adapter = PostAdapter(feed)
+                adapter = activity?.let { PostAdapter(feed, it) }!!
                 newRecyclerView.adapter = adapter
             }
 

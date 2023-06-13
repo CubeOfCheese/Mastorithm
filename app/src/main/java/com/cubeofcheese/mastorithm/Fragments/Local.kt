@@ -88,7 +88,7 @@ class Local : Fragment(), ScrollableFeed {
                 }
                 feed.addAll(0, refreshArrayList)
 
-                adapter = PostAdapter(feed)
+                adapter = activity?.let { PostAdapter(feed, it) }!!
                 newRecyclerView.adapter = adapter
             }
 

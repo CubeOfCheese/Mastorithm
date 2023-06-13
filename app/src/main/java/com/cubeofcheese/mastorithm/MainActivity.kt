@@ -1,6 +1,8 @@
 package com.cubeofcheese.mastorithm
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.cubeofcheese.mastorithm.Fragments.Chrono
@@ -38,5 +40,6 @@ class MainActivity : AppCompatActivity() {
                 (pageAdapter.getItem(position) as ScrollableFeed).scrollToTop()
             }
         })
+
     }
 }
