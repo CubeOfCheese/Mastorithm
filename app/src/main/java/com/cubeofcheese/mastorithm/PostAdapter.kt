@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.cubeofcheese.mastorithm.Fragments.BASE_URL
 import com.cubeofcheese.mastorithm.models.PostModel
 import com.cubeofcheese.mastorithm.models.TestData
 import com.google.gson.Gson
@@ -89,9 +88,10 @@ class PostAdapter(private val postList : ArrayList<PostModel>, var context: Cont
 private fun boostStatus(context: Context, statusId: String) {
     val sharedPref = context?.getSharedPreferences("strings", Context.MODE_PRIVATE)
     var authtoken = sharedPref?.getString("authtoken", "").toString()
+    var server = sharedPref?.getString("server", "").toString()
 
     val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(BASE_URL)
+        .baseUrl(server)
         .build()
         .create(ApiInterface::class.java)
 
@@ -111,9 +111,10 @@ private fun boostStatus(context: Context, statusId: String) {
 private fun favouriteStatus(context: Context, statusId: String) {
     val sharedPref = context?.getSharedPreferences("strings", Context.MODE_PRIVATE)
     var authtoken = sharedPref?.getString("authtoken", "").toString()
+    var server = sharedPref?.getString("server", "").toString()
 
     val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(BASE_URL)
+        .baseUrl(server)
         .build()
         .create(ApiInterface::class.java)
 

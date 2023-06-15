@@ -8,8 +8,6 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
-import com.cubeofcheese.mastorithm.Fragments.BASE_URL
 import com.cubeofcheese.mastorithm.models.Token
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,10 +22,10 @@ class LoginWebviewActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_webview)
         val serverUrl = intent.getStringExtra("serverUrl")
-//        var clientId = intent.getStringExtra("clientId")
         val sharedPref = getSharedPreferences("strings", Context.MODE_PRIVATE)
         val clientId = sharedPref?.getString("clientId", "").toString()
         val clientSecret = sharedPref?.getString("clientSecret", "").toString()
+        val server = sharedPref?.getString("server", "").toString()
 
         webView = findViewById<View>(R.id.webView) as WebView
         webView!!.settings.javaScriptEnabled = true
@@ -42,7 +40,7 @@ class LoginWebviewActivity : Activity() {
 
                     val retrofitBuilder = Retrofit.Builder().addConverterFactory(
                         GsonConverterFactory.create())
-                        .baseUrl(BASE_URL)
+                        .baseUrl(server)
                         .build()
                         .create(ApiInterface::class.java)
 

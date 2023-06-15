@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.cubeofcheese.mastorithm.ApiInterface
-import com.cubeofcheese.mastorithm.Fragments.BASE_URL
 import com.cubeofcheese.mastorithm.LoginWebviewActivity
 import com.cubeofcheese.mastorithm.databinding.ActivityLoginBinding
 
@@ -44,10 +43,12 @@ class LoginActivity : AppCompatActivity() {
         val server = binding.server
         val login = binding.login
         val loading = binding.loading
+        val sharedPref = getSharedPreferences("strings", Context.MODE_PRIVATE)
+        var serverurl = sharedPref?.getString("server", "")
 
 
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(serverurl)
             .build()
             .create(ApiInterface::class.java)
 

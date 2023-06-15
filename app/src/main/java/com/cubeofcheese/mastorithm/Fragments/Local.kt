@@ -73,8 +73,11 @@ class Local : Fragment(), ScrollableFeed {
     }
 
     private fun refreshFeed(sinceId: String?) {
+        val sharedPref = activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        var server = sharedPref?.getString("server", "")
+
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(server)
             .build()
             .create(ApiInterface::class.java)
 
@@ -103,9 +106,12 @@ class Local : Fragment(), ScrollableFeed {
     }
 
     private fun fetchFeed() {
+        val sharedPref = activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        var server = sharedPref?.getString("server", "")
+
         lock = true
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(server)
             .build()
             .create(ApiInterface::class.java)
 

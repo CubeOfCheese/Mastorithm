@@ -21,8 +21,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "https://mstdn.social/"
-
 class Chrono : Fragment(), ScrollableFeed {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
@@ -82,7 +80,7 @@ class Chrono : Fragment(), ScrollableFeed {
 
 
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(server)
             .build()
             .create(ApiInterface::class.java)
 
@@ -111,9 +109,12 @@ class Chrono : Fragment(), ScrollableFeed {
     }
 
     private fun fetchFeed(offset: Int) {
+        val sharedPref = activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        var server = sharedPref?.getString("server", "")
+
         lock = true
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(server)
             .build()
             .create(ApiInterface::class.java)
 

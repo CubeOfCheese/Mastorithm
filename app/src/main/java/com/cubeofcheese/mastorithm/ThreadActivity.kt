@@ -1,5 +1,6 @@
 package com.cubeofcheese.mastorithm
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,8 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager.widget.ViewPager
-import com.cubeofcheese.mastorithm.Fragments.BASE_URL
 import com.cubeofcheese.mastorithm.models.PostModel
 import com.cubeofcheese.mastorithm.models.StatusContext
 import com.cubeofcheese.mastorithm.ui.theme.MastorithmTheme
@@ -77,8 +76,12 @@ class ThreadActivity : AppCompatActivity() {
 
 
     private fun getContext(status: PostModel) {
+        val sharedPref = getSharedPreferences("strings", Context.MODE_PRIVATE)
+        var server = sharedPref?.getString("server", "")
+        var authtoken = sharedPref?.getString("authtoken", "")
+
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(server)
             .build()
             .create(ApiInterface::class.java)
 
