@@ -39,6 +39,7 @@ class ThreadActivity : AppCompatActivity() {
     private lateinit var descendants: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
     lateinit var adapter: PostAdapter
+    lateinit var authtoken : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +82,7 @@ class ThreadActivity : AppCompatActivity() {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getStatusContext(status.id)
+        val retrofitData = retrofitBuilder.getStatusContext("Bearer $authtoken", status.id)
 
         retrofitData.enqueue(object: Callback<StatusContext?> {
             override fun onResponse (call: Call<StatusContext?>, response: Response<StatusContext?>) {

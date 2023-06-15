@@ -1,4 +1,18 @@
 <resources>
-    <string name="app_name">Mastorithm</string>
+    <string name="app_name">Rhythm</string>
     <string name="title_activity_thread">ThreadActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_webview_login">LoginWebviewActivity</string>
+    <string name="prompt_server">mastodon.social</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Go</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="oauth_token">oauth_token</string>
+    <string name="authtoken">authtoken</string>
+    <string name="clientId">clientId</string>
+    <string name="clientSecret">clientSecret</string>
 </resources>

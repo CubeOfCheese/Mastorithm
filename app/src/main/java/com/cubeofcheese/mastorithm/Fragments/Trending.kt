@@ -1,11 +1,11 @@
 package com.cubeofcheese.mastorithm.Fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +13,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cubeofcheese.mastorithm.ApiInterface
 import com.cubeofcheese.mastorithm.PostAdapter
 import com.cubeofcheese.mastorithm.R
-import com.cubeofcheese.mastorithm.TestData
+import com.cubeofcheese.mastorithm.models.TestData
 import com.cubeofcheese.mastorithm.models.PostModel
 import com.cubeofcheese.mastorithm.util.generatePost
-import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,11 +28,15 @@ class Trending : Fragment(), ScrollableFeed {
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
     lateinit var adapter: PostAdapter
+    lateinit var authtoken : String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val sharedPref = this.activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        authtoken = sharedPref?.getString("authtoken", "").toString()
 
         feed = arrayListOf<PostModel>()
         refreshFeed()
@@ -74,7 +77,7 @@ class Trending : Fragment(), ScrollableFeed {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getTrendingStatuses(0)
+        val retrofitData = retrofitBuilder.getTrendingStatuses("Bearer $authtoken", 0)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
@@ -102,7 +105,7 @@ class Trending : Fragment(), ScrollableFeed {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getTrendingStatuses(offset)
+        val retrofitData = retrofitBuilder.getTrendingStatuses("Bearer $authtoken", offset)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {

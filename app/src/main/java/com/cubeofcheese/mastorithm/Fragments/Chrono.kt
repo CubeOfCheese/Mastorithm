@@ -1,6 +1,6 @@
 package com.cubeofcheese.mastorithm.Fragments
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cubeofcheese.mastorithm.*
 import com.cubeofcheese.mastorithm.models.PostModel
+import com.cubeofcheese.mastorithm.models.TestData
 import com.cubeofcheese.mastorithm.util.generatePost
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,20 +21,23 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "https://mstdn.social"
+const val BASE_URL = "https://mstdn.social/"
 
 class Chrono : Fragment(), ScrollableFeed {
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var feed: ArrayList<PostModel>
     lateinit var swipeToRefresh : SwipeRefreshLayout
-    lateinit var repliesCount : Button
     lateinit var adapter: PostAdapter
     var lock = false
-
+    lateinit var authtoken : String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val sharedPref = this.activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        authtoken = sharedPref?.getString("authtoken", "").toString()
+
 
         feed = arrayListOf<PostModel>()
         refreshFeed(null)
@@ -59,17 +63,6 @@ class Chrono : Fragment(), ScrollableFeed {
                 }
             }
         })
-
-//        repliesCount = view.findViewById(R.id.repliesCount)
-//
-//
-//        repliesCount.setOnClickListener {
-//            activity?.let {
-//                val intent = Intent(it, ThreadActivity::class.java)
-//                intent.putExtra("statusId", "110533224291142854")
-//                it.startActivity(intent)
-//            }
-//        }
     }
 
     private fun setupRefreshBehavior(view: View) {
@@ -84,12 +77,16 @@ class Chrono : Fragment(), ScrollableFeed {
     }
 
     private fun refreshFeed(sinceId: String?) {
+        val sharedPref = activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        var server = sharedPref?.getString("server", "")
+
+
         val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getData(sinceId, null)
+        val retrofitData = retrofitBuilder.getData("Bearer $authtoken", sinceId, null)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
@@ -120,7 +117,7 @@ class Chrono : Fragment(), ScrollableFeed {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getData(null, feed[feed.size-1].id)
+        val retrofitData = retrofitBuilder.getData("Bearer $authtoken", null, feed[feed.size-1].id)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {

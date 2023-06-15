@@ -1,5 +1,6 @@
 package com.cubeofcheese.mastorithm.Fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,10 +13,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cubeofcheese.mastorithm.ApiInterface
 import com.cubeofcheese.mastorithm.PostAdapter
 import com.cubeofcheese.mastorithm.R
-import com.cubeofcheese.mastorithm.TestData
+import com.cubeofcheese.mastorithm.models.TestData
 import com.cubeofcheese.mastorithm.models.PostModel
 import com.cubeofcheese.mastorithm.util.generatePost
-import com.keylesspalace.tusky.util.parseAsMastodonHtml
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,11 +28,15 @@ class Local : Fragment(), ScrollableFeed {
     lateinit var swipeToRefresh : SwipeRefreshLayout
     lateinit var adapter: PostAdapter
     var lock = false
+    lateinit var authtoken : String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val sharedPref = this.activity?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+        authtoken = sharedPref?.getString("authtoken", "").toString()
 
         feed = arrayListOf<PostModel>()
         refreshFeed(null)
@@ -74,7 +78,7 @@ class Local : Fragment(), ScrollableFeed {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getLocalStatuses(sinceId, null)
+        val retrofitData = retrofitBuilder.getLocalStatuses("Bearer $authtoken", sinceId, null)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {
@@ -105,7 +109,7 @@ class Local : Fragment(), ScrollableFeed {
             .build()
             .create(ApiInterface::class.java)
 
-        val retrofitData = retrofitBuilder.getLocalStatuses(null, feed[feed.size-1].id)
+        val retrofitData = retrofitBuilder.getLocalStatuses("Bearer $authtoken", null, feed[feed.size-1].id)
 
         retrofitData.enqueue(object: Callback<List<TestData>?> {
             override fun onResponse (call: Call<List<TestData>?>, response: Response<List<TestData>?>) {

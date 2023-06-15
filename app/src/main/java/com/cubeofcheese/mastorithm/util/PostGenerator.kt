@@ -1,6 +1,6 @@
 package com.cubeofcheese.mastorithm.util
 
-import com.cubeofcheese.mastorithm.TestData
+import com.cubeofcheese.mastorithm.models.TestData
 import com.cubeofcheese.mastorithm.models.PostModel
 import com.keylesspalace.tusky.util.parseAsMastodonHtml
 

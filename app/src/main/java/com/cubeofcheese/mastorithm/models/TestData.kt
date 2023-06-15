@@ -1,7 +1,5 @@
-package com.cubeofcheese.mastorithm
+package com.cubeofcheese.mastorithm.models
 
-import com.cubeofcheese.mastorithm.models.AccountModel
-import com.cubeofcheese.mastorithm.models.MediaAttachment
 import com.google.gson.annotations.SerializedName
 
 data class TestData(

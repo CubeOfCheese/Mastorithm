@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.cubeofcheese.mastorithm.Fragments.BASE_URL
 import com.cubeofcheese.mastorithm.models.PostModel
-import com.cubeofcheese.mastorithm.util.generatePost
+import com.cubeofcheese.mastorithm.models.TestData
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import retrofit2.Call
@@ -63,11 +63,11 @@ class PostAdapter(private val postList : ArrayList<PostModel>, var context: Cont
         }
         holder.reblogsCount.text = currentItem.reblogsCount.toString() + " Boosts"
         holder.reblogsCount.setOnClickListener {
-            boostStatus(currentItem.id)
+            boostStatus(context, currentItem.id)
         }
         holder.favouritesCount.text = currentItem.favoritesCount.toString() + " Stars"
         holder.favouritesCount.setOnClickListener {
-            favouriteStatus(currentItem.id)
+            favouriteStatus(context, currentItem.id)
         }
     }
 
@@ -86,13 +86,16 @@ class PostAdapter(private val postList : ArrayList<PostModel>, var context: Cont
 
 }
 
-private fun boostStatus(statusId: String) {
+private fun boostStatus(context: Context, statusId: String) {
+    val sharedPref = context?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+    var authtoken = sharedPref?.getString("authtoken", "").toString()
+
     val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
         .baseUrl(BASE_URL)
         .build()
         .create(ApiInterface::class.java)
 
-    val retrofitData = retrofitBuilder.boostStatus(statusId)
+    val retrofitData = retrofitBuilder.boostStatus("Bearer $authtoken", statusId)
 
     retrofitData.enqueue(object: Callback<TestData?> {
         override fun onResponse (call: Call<TestData?>, response: Response<TestData?>) {
@@ -105,13 +108,16 @@ private fun boostStatus(statusId: String) {
     })
 }
 
-private fun favouriteStatus(statusId: String) {
+private fun favouriteStatus(context: Context, statusId: String) {
+    val sharedPref = context?.getSharedPreferences("strings", Context.MODE_PRIVATE)
+    var authtoken = sharedPref?.getString("authtoken", "").toString()
+
     val retrofitBuilder = Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
         .baseUrl(BASE_URL)
         .build()
         .create(ApiInterface::class.java)
 
-    val retrofitData = retrofitBuilder.favouriteStatus(statusId)
+    val retrofitData = retrofitBuilder.favouriteStatus("Bearer $authtoken", statusId)
 
     retrofitData.enqueue(object: Callback<TestData?> {
         override fun onResponse (call: Call<TestData?>, response: Response<TestData?>) {
