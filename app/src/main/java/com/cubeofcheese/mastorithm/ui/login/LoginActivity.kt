@@ -3,22 +3,21 @@ package com.cubeofcheese.mastorithm.ui.login
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.cubeofcheese.mastorithm.ApiInterface
 import com.cubeofcheese.mastorithm.LoginWebviewActivity
-import com.cubeofcheese.mastorithm.databinding.ActivityLoginBinding
-
 import com.cubeofcheese.mastorithm.R
+import com.cubeofcheese.mastorithm.databinding.ActivityLoginBinding
 import com.cubeofcheese.mastorithm.models.Application
 import com.cubeofcheese.mastorithm.models.Token
 import retrofit2.Call

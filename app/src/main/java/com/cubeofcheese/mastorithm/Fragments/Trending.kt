@@ -13,8 +13,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cubeofcheese.mastorithm.ApiInterface
 import com.cubeofcheese.mastorithm.PostAdapter
 import com.cubeofcheese.mastorithm.R
-import com.cubeofcheese.mastorithm.models.TestData
 import com.cubeofcheese.mastorithm.models.PostModel
+import com.cubeofcheese.mastorithm.models.TestData
 import com.cubeofcheese.mastorithm.util.generatePost
 import retrofit2.Call
 import retrofit2.Callback
