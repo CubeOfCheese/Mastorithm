@@ -81,6 +81,7 @@
                         android:maxEms="60"
                         android:text="TextView"
                         android:textSize="18sp"
+                        android:autoLink="web"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
